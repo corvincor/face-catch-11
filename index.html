@@ -3,11 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Маска для обличчя - MindAR</title>
+  <title>Маска для обличчя - MindAR 1.2.5</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
-  
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-three.prod.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.147.0/build/three.module.js",
+      "mindar-face-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-three.prod.js"
+    }
+  }
+  </script>
 
   <style>
     html, body {
@@ -35,21 +40,24 @@
     <p style="font-size: 0.8em; color: #aaa;">(Надайте дозвіл на використання камери)</p>
   </div>
 
-  <script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { MindARThree } from 'mindar-face-three';
+
     document.addEventListener("DOMContentLoaded", () => {
       const start = async () => {
-        const mindarThree = new window.MINDAR.FACE.MindARThree({
+        const mindarThree = new MindARThree({
           container: document.body,
         });
 
         const {renderer, scene, camera} = mindarThree;
 
-        const light = new window.THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
         scene.add(light);
 
         const faceMesh = mindarThree.addFaceMesh();
 
-        const textureLoader = new window.THREE.TextureLoader();
+        const textureLoader = new THREE.TextureLoader();
         textureLoader.load("https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/face-tracking/assets/sparkar/face-mask-template.png", (texture) => {
           faceMesh.material.map = texture;
           faceMesh.material.transparent = true;
