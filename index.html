@@ -22,7 +22,13 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
+    }
+
+    #container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
     }
     
     #loading-overlay {
@@ -34,6 +40,8 @@
   </style>
 </head>
 <body>
+
+  <div id="container"></div>
 
   <div id="loading-overlay">
     <h2>Віртуальна маска</h2>
@@ -48,7 +56,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const start = async () => {
         const mindarThree = new MindARThree({
-          container: document.body,
+          container: document.querySelector("#container"),
         });
 
         const {renderer, scene, camera} = mindarThree;
