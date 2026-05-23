@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Маска для обличчя - MindAR</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-three.prod.js"></script>
+
+  <style>
+    html, body {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+    
+    #loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85); color: white; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      z-index: 20000; font-family: sans-serif; transition: opacity 0.5s;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loading-overlay">
+    <h2>Віртуальна маска</h2>
+    <p>Запуск камери та нейромережі...</p>
+    <p style="font-size: 0.8em; color: #aaa;">(Надайте дозвіл на використання камери)</p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const start = async () => {
+        const mindarThree = new window.MINDAR.FACE.MindARThree({
+          container: document.body,
+        });
+
+        const {renderer, scene, camera} = mindarThree;
+
+        const light = new window.THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
+        const faceMesh = mindarThree.addFaceMesh();
+
+        const textureLoader = new window.THREE.TextureLoader();
+        textureLoader.load("https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/face-tracking/assets/sparkar/face-mask-template.png", (texture) => {
+          faceMesh.material.map = texture;
+          faceMesh.material.transparent = true;
+          faceMesh.material.needsUpdate = true;
+        });
+
+        scene.add(faceMesh);
+
+        await mindarThree.start();
+
+        const overlay = document.getElementById('loading-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.style.display = 'none', 500);
+
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      }
+
+      start();
+    });
+  </script>
+</body>
+</html>
